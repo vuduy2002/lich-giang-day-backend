@@ -1,6 +1,8 @@
 const Event = require('../models/Event');
 const EventType = require('../models/EventType');
 const Lecturer = require('../models/Lecturer');
+const Location = require('../models/Location');
+
 
 const createEvent = async (req, res) => {
   const event = new Event(req.body);
@@ -15,6 +17,7 @@ const createEvent = async (req, res) => {
 const getAllEvents = async (req, res) => {
   try {
     const events = await Event.find()
+      .populate({ path: 'eventLocation', model: Location, localField: 'eventLocation', foreignField: 'locationId', select: 'locationName -_id' })
       .populate({ path: 'eventType', model: EventType, localField: 'eventType', foreignField: 'typeId', select: 'typeName -_id' })
       .populate({ path: 'host', model: Lecturer, localField: 'host', foreignField: 'lecturerId', select: 'lecturerName -_id' })
       .populate({ path: 'participants', model: Lecturer, localField: 'participants', foreignField: 'lecturerId', select: 'lecturerName -_id' });
@@ -26,7 +29,8 @@ const getAllEvents = async (req, res) => {
 
 const getEventById = async (req, res) => {
   try {
-    const event = await Event.findOne({ eventId: req.params.eventId })
+    const event = await Event.findOne({ eventId: req.params.id })
+      .populate({ path: 'eventLocation', model: Location, localField: 'eventLocation', foreignField: 'locationId', select: 'locationName -_id' })
       .populate({ path: 'eventType', model: EventType, localField: 'eventType', foreignField: 'typeId', select: 'typeName -_id' })
       .populate({ path: 'host', model: Lecturer, localField: 'host', foreignField: 'lecturerId', select: 'lecturerName -_id' })
       .populate({ path: 'participants', model: Lecturer, localField: 'participants', foreignField: 'lecturerId', select: 'lecturerName -_id' });
@@ -39,7 +43,7 @@ const getEventById = async (req, res) => {
 const updateEvent = async (req, res) => {
   try {
     const updatedEvent = await Event.findOneAndUpdate(
-      { eventId: req.params.eventId },
+      { eventId: req.params.id },
       req.body,
       { new: true }
     );

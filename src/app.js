@@ -18,6 +18,8 @@ const eventTypeRoutes = require('./routes/eventType');
 const lecturerRoutes = require('./routes/lecturer');
 const notificationRoutes = require('./routes/notification');
 const roleRoutes = require('./routes/role');
+const locationRoutes = require('./routes/location');
+
 
 // Use routes
 app.use('/api/attendances', attendanceRoutes);
@@ -26,6 +28,8 @@ app.use('/api/eventTypes', eventTypeRoutes);
 app.use('/api/lecturers', lecturerRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/roles', roleRoutes);
+app.use('/api/locations', locationRoutes);
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {

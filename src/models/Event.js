@@ -8,7 +8,7 @@ const eventSchema = new mongoose.Schema({
   date: { type: String, required: true },
   timeStart: { type: String, required: true },
   timeEnd: { type: String, required: true },
-  eventLocation: { type: String, required: true },
+  eventLocation: { type: String, required: true, ref: 'Location' },
   eventType: { type: String, required: true, ref: 'EventType' },
   host:[{ type: String, required: true, ref: 'Lecturer' }],
   participants:[{ type: String, required: true, ref: 'Lecturer' }]

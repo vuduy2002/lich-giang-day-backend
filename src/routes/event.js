@@ -10,8 +10,8 @@ const {
 
 router.post('/', createEvent);
 router.get('/', getAllEvents);
-router.get('/:eventId', getEventById);
-router.put('/:eventId', updateEvent);
-router.delete('/:eventId', deleteEvent);
+router.get('/:id', getEventById);
+router.put('/:id', updateEvent);
+router.delete('/:id', deleteEvent);
 
 module.exports = router;
