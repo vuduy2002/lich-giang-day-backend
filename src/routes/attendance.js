@@ -10,8 +10,8 @@ const {
 
 router.post('/', createAttendance);
 router.get('/', getAllAttendances);
-router.get('/:eventId/:lecturerId', getAttendanceById);
-router.put('/:eventId/:lecturerId', updateAttendance);
-router.delete('/:eventId/:lecturerId', deleteAttendance);
+router.get('/:eventId', getAttendanceById);
+router.put('/:eventId', updateAttendance);
+router.delete('/:eventId', deleteAttendance);
 
 module.exports = router;

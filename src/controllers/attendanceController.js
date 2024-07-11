@@ -21,7 +21,7 @@ const getAllAttendances = async (req, res) => {
 
 const getAttendanceById = async (req, res) => {
   try {
-    const attendance = await Attendance.findOne({ eventId: req.params.eventId, lecturerId: req.params.lecturerId });
+    const attendance = await Attendance.findOne({ eventId: req.params.eventId});
     if (!attendance) return res.status(404).json({ message: 'Attendance not found' });
     res.json(attendance);
   } catch (err) {
@@ -32,7 +32,7 @@ const getAttendanceById = async (req, res) => {
 const updateAttendance = async (req, res) => {
   try {
     const updatedAttendance = await Attendance.findOneAndUpdate(
-      { eventId: req.params.eventId, lecturerId: req.params.lecturerId },
+      { eventId: req.params.eventId},
       req.body,
       { new: true }
     );
@@ -45,7 +45,7 @@ const updateAttendance = async (req, res) => {
 
 const deleteAttendance = async (req, res) => {
   try {
-    const deletedAttendance = await Attendance.findOneAndDelete({ eventId: req.params.eventId, lecturerId: req.params.lecturerId });
+    const deletedAttendance = await Attendance.findOneAndDelete({ eventId: req.params.eventId});
     if (!deletedAttendance) return res.status(404).json({ message: 'Attendance not found' });
     res.json({ message: 'Attendance deleted' });
   } catch (err) {
