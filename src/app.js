@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+// src/app.js
+require('./cronJob');
 
 dotenv.config();
 
@@ -16,7 +18,7 @@ const attendanceRoutes = require('./routes/attendance');
 const eventRoutes = require('./routes/event');
 const eventTypeRoutes = require('./routes/eventType');
 const lecturerRoutes = require('./routes/lecturer');
-const notificationRoutes = require('./routes/notification');
+// const notificationRoutes = require('./routes/notification');
 const roleRoutes = require('./routes/role');
 const locationRoutes = require('./routes/location');
 
@@ -26,7 +28,7 @@ app.use('/api/attendances', attendanceRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/eventTypes', eventTypeRoutes);
 app.use('/api/lecturers', lecturerRoutes);
-app.use('/api/notifications', notificationRoutes);
+// app.use('/api/notifications', notificationRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/locations', locationRoutes);
 

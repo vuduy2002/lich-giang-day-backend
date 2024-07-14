@@ -1,58 +1,46 @@
-const Notification = require('../models/Notification');
+const Event = require('../models/Event');
+const Lecturer = require('../models/Lecturer');
+const sendEmail = require('../utils/sendEmail');
 
-const createNotification = async (req, res) => {
-  const notification = new Notification(req.body);
+const sendDailyEventNotifications = async () => {
   try {
-    const savedNotification = await notification.save();
-    res.status(201).json(savedNotification);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    const today = new Date().toISOString().split('T')[0]; // Lấy ngày hôm nay dưới định dạng YYYY-MM-DD
+    const events = await Event.find({ date: today }).populate('host participants');
+    
+    const lecturers = {};
+
+    // Nhóm sự kiện theo giảng viên
+    events.forEach(event => {
+      event.host.forEach(host => {
+        if (!lecturers[host]) lecturers[host] = [];
+        lecturers[host].push(event);
+      });
+      event.participants.forEach(participant => {
+        if (!lecturers[participant]) lecturers[participant] = [];
+        lecturers[participant].push(event);
+      });
+    });
+
+    // Tạo và gửi email cho mỗi giảng viên
+    for (const lecturerId in lecturers) {
+      const lecturer = await Lecturer.findById(lecturerId);
+      if (lecturer) {
+        const emailContent = generateEmailContent(lecturers[lecturerId]);
+        await sendEmail(lecturer.email, 'Today\'s Events', emailContent);
+      }
+    }
+
+  } catch (error) {
+    console.error('Error sending daily event notifications:', error);
   }
 };
 
-const getAllNotifications = async (req, res) => {
-  try {
-    const notifications = await Notification.find();
-    res.json(notifications);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-const getNotificationById = async (req, res) => {
-  try {
-    const notification = await Notification.findOne({ notificationId: req.params.id });
-    if (!notification) return res.status(404).json({ message: 'Notification not found' });
-    res.json(notification);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-const updateNotification = async (req, res) => {
-  try {
-    const updatedNotification = await Notification.findOneAndUpdate({ notificationId: req.params.id }, req.body, { new: true });
-    if (!updatedNotification) return res.status(404).json({ message: 'Notification not found' });
-    res.json(updatedNotification);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
-
-const deleteNotification = async (req, res) => {
-  try {
-    const deletedNotification = await Notification.findOneAndDelete({ notificationId: req.params.id });
-    if (!deletedNotification) return res.status(404).json({ message: 'Notification not found' });
-    res.json({ message: 'Notification deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+const generateEmailContent = (events) => {
+  return events.map(event => {
+    return `Event: ${event.eventName}\nTime: ${event.timeStart} - ${event.timeEnd}\nLocation: ${event.eventLocation}\n\n`;
+  }).join('');
 };
 
 module.exports = {
-  createNotification,
-  getAllNotifications,
-  getNotificationById,
-  updateNotification,
-  deleteNotification,
+  sendDailyEventNotifications
 };
