@@ -1,46 +1,66 @@
+const cron = require('node-cron');
+const sendMail = require('../utils/sendEmail');
 const Event = require('../models/Event');
 const Lecturer = require('../models/Lecturer');
-const sendEmail = require('../utils/sendEmail');
+const Location = require('../models/Location');
 
-const sendDailyEventNotifications = async () => {
-  try {
-    const today = new Date().toISOString().split('T')[0]; // Lấy ngày hôm nay dưới định dạng YYYY-MM-DD
-    const events = await Event.find({ date: today }).populate('host participants');
-    
-    const lecturers = {};
+const sendDailyNotifications = async () => {
+  const newDate = new Date();
 
-    // Nhóm sự kiện theo giảng viên
-    events.forEach(event => {
-      event.host.forEach(host => {
-        if (!lecturers[host]) lecturers[host] = [];
-        lecturers[host].push(event);
-      });
-      event.participants.forEach(participant => {
-        if (!lecturers[participant]) lecturers[participant] = [];
-        lecturers[participant].push(event);
-      });
-    });
+  // Format date
+  const formattedMonth = newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1;
+  const formattedDate = newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate();
+  const today = `${newDate.getFullYear()}-${formattedMonth}-${formattedDate}`;
+  
+  console.log('Checking for events for today:', today);
 
-    // Tạo và gửi email cho mỗi giảng viên
-    for (const lecturerId in lecturers) {
-      const lecturer = await Lecturer.findById(lecturerId);
-      if (lecturer) {
-        const emailContent = generateEmailContent(lecturers[lecturerId]);
-        await sendEmail(lecturer.email, 'Today\'s Events', emailContent);
+  const events = await Event.find({ date: today })
+    .populate({ path: 'host', model: Lecturer, localField: 'host', foreignField: 'lecturerId', select: 'email -_id' })
+    .populate({ path: 'participants', model: Lecturer, localField: 'participants', foreignField: 'lecturerId', select: 'email -_id' })
+    .populate({ path: 'eventLocation', model: Location, localField: 'eventLocation', foreignField: 'locationId', select: 'locationName -_id' });
+  console.log('Events found:', events.length);
+
+  // Create a map to group events by lecturer
+  const lecturerEventsMap = new Map();
+
+  events.forEach(event => {
+    const addLecturerEvent = (lecturerEmail) => {
+      if (!lecturerEventsMap.has(lecturerEmail)) {
+        lecturerEventsMap.set(lecturerEmail, []);
       }
+      lecturerEventsMap.get(lecturerEmail).push(event);
+    };
+
+    // Add host to the lecturerEventsMap
+    if (event.host && event.host.email) {
+      addLecturerEvent(event.host.email);
     }
 
-  } catch (error) {
-    console.error('Error sending daily event notifications:', error);
-  }
+    // Add participants to the lecturerEventsMap
+    event.participants.forEach(lecturerDetail => {
+      addLecturerEvent(lecturerDetail.email);
+    });
+  });
+
+  // Send emails, avoiding duplicates
+  const sentEmails = new Set();
+
+  lecturerEventsMap.forEach((events, email) => {
+    if (!sentEmails.has(email)) {
+      const emailContent = `
+        Xin chào, hôm nay bạn có các sự kiện sau:
+        ${events.map(event => `${event.timeStart} - ${event.timeEnd}: ${event.eventName} tại ${event.eventLocation?.locationName}.`).join('\n')}
+      `;
+      console.log(`Sending email to ${email}`);
+      sendMail(email, 'Daily Event Notification', emailContent);
+      sentEmails.add(email);
+    }
+  });
 };
 
-const generateEmailContent = (events) => {
-  return events.map(event => {
-    return `Event: ${event.eventName}\nTime: ${event.timeStart} - ${event.timeEnd}\nLocation: ${event.eventLocation}\n\n`;
-  }).join('');
+const dailyNotificationJob = () => {
+  // Schedule the cron job to run every day at 6 AM
+  cron.schedule('* * * * *', sendDailyNotifications);
 };
 
-module.exports = {
-  sendDailyEventNotifications
-};
+module.exports = dailyNotificationJob;

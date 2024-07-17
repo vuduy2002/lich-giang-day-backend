@@ -1,9 +1,9 @@
+// src/app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-// src/app.js
-require('./cronJob');
+const dailyNotificationJob = require('./controllers/notificationController');
 
 dotenv.config();
 
@@ -18,20 +18,14 @@ const attendanceRoutes = require('./routes/attendance');
 const eventRoutes = require('./routes/event');
 const eventTypeRoutes = require('./routes/eventType');
 const lecturerRoutes = require('./routes/lecturer');
-// const notificationRoutes = require('./routes/notification');
-const roleRoutes = require('./routes/role');
 const locationRoutes = require('./routes/location');
-
 
 // Use routes
 app.use('/api/attendances', attendanceRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/eventTypes', eventTypeRoutes);
 app.use('/api/lecturers', lecturerRoutes);
-// app.use('/api/notifications', notificationRoutes);
-app.use('/api/roles', roleRoutes);
 app.use('/api/locations', locationRoutes);
-
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -41,6 +35,7 @@ mongoose.connect(process.env.MONGO_URI, {
   console.log('MongoDB connected');
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+    dailyNotificationJob();
   });
 }).catch(err => {
   console.error('Connection error', err.message);
