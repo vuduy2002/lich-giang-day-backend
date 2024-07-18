@@ -57,7 +57,7 @@ const sendDailyNotifications = async () => {
         )}
       `
       console.log(`Sending email to ${email}`);
-      sendMail(email, 'Daily Event Notification', emailContent);
+      sendMail(email, 'Thông báo sự kiện hàng ngày', emailContent);
       sentEmails.add(email);
     }
   });
