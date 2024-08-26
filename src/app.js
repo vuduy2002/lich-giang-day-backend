@@ -50,7 +50,7 @@ const port = 5000;
 
 // Định nghĩa một route đơn giản
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('duy dep trai');
 });
 
 // Lắng nghe trên port 3000
