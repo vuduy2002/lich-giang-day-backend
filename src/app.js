@@ -50,5 +50,5 @@ console.log('MongoDB connected');
   });
 
   app.get('/', (req, res) => {
-    res.send('Hello, Heroku!');
+    res.send('Hello, Heroku!'+ `${port}`);
 });
