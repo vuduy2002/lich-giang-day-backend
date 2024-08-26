@@ -13,21 +13,21 @@ const port = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-// Import routes
-const attendanceRoutes = require('./routes/attendance');
-const eventRoutes = require('./routes/event');
-const eventTypeRoutes = require('./routes/eventType');
-const lecturerRoutes = require('./routes/lecturer');
-const resetPass = require('./routes/resetPass');
-const locationRoutes = require('./routes/location');
+// // Import routes
+// const attendanceRoutes = require('./routes/attendance');
+// const eventRoutes = require('./routes/event');
+// const eventTypeRoutes = require('./routes/eventType');
+// const lecturerRoutes = require('./routes/lecturer');
+// const resetPass = require('./routes/resetPass');
+// const locationRoutes = require('./routes/location');
 
-// Use routes
-app.use('/api/attendances', attendanceRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/eventTypes', eventTypeRoutes);
-app.use('/api/lecturers', lecturerRoutes);
-app.use('/api/', resetPass);
-app.use('/api/locations', locationRoutes);
+// // Use routes
+// app.use('/api/attendances', attendanceRoutes);
+// app.use('/api/events', eventRoutes);
+// app.use('/api/eventTypes', eventTypeRoutes);
+// app.use('/api/lecturers', lecturerRoutes);
+// app.use('/api/', resetPass);
+// app.use('/api/locations', locationRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
