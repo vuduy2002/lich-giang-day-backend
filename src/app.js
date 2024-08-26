@@ -30,25 +30,15 @@ app.use('/api/', resetPass);
 app.use('/api/locations', locationRoutes);
 
 // Connect to MongoDB
-// mongoose.connect(process.env.MONGO_URI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// }).then(() => {
-//   console.log('MongoDB connected');
-//   app.listen(port, () => {
-//     console.log(`Server is running on http://localhost:${port}`);
-//     // dailyNotificationJob();
-//   });
-// }).catch(err => {
-//   console.error('Connection error', err.message);
-// });
-
-console.log('MongoDB connected');
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('MongoDB connected');
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-    // dailyNotificationJob();
+    dailyNotificationJob();
   });
-
-  app.get('/', (req, res) => {
-    res.send('Hello, Heroku!'+ `${port}`);
+}).catch(err => {
+  console.error('Connection error', err.message);
 });
