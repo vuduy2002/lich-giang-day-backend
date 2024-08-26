@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const dailyNotificationJob = require('./controllers/notificationController');
+// const dailyNotificationJob = require('./controllers/notificationController');
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ const attendanceRoutes = require('./routes/attendance');
 const eventRoutes = require('./routes/event');
 const eventTypeRoutes = require('./routes/eventType');
 const lecturerRoutes = require('./routes/lecturer');
-const resetPass = require('./routes/resetPass');
+// const resetPass = require('./routes/resetPass');
 const locationRoutes = require('./routes/location');
 
 // Use routes
@@ -26,7 +26,7 @@ app.use('/api/attendances', attendanceRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/eventTypes', eventTypeRoutes);
 app.use('/api/lecturers', lecturerRoutes);
-app.use('/api/', resetPass);
+// app.use('/api/', resetPass);
 app.use('/api/locations', locationRoutes);
 
 // Connect to MongoDB
