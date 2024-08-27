@@ -65,7 +65,7 @@ const sendDailyNotifications = async () => {
 
 const dailyNotificationJob = () => {
   // Schedule the cron job to run every day at 6 AM
-  // cron.schedule('* * * * *', sendDailyNotifications);
+  cron.schedule('* * * * *', sendDailyNotifications);
 };
 
 module.exports = dailyNotificationJob;
