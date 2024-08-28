@@ -4,7 +4,7 @@ on:
   schedule:
     # Chạy mỗi phút
     - cron: '* * * * *'
-  # workflow_dispatch: # Kích hoạt workflow thủ công (nếu bạn muốn chạy thử ngay)
+  workflow_dispatch: # Kích hoạt workflow thủ công (nếu bạn muốn chạy thử ngay)
   
 jobs:
   run-vercel-api:
