@@ -63,11 +63,37 @@ const sendDailyNotifications = async () => {
   });
 };
 
-const dailyNotificationJob = () => {
-  // Schedule the cron job to run every day at 6 AM
-  // cron.schedule('* * * * *', sendDailyNotifications);
+const dailyNotificationJob = async (req, res) => {
+// Schedule the cron job to run every day at 6 AM
+// cron.schedule('* * * * *', sendDailyNotifications);
+
+
+    // Logic để gửi email cho người dùng
+
+    //C1:
+    // sendDailyNotifications()
+    //     .then(() => {
+    //         res.send('Email sent successfully');
+    //     })
+    //     .catch((error) => {
+    //         res.status(500).send('Failed to send email');
+    //     });
+    
+    ///--------------
+    //C2: 
+      try {
+        // Gọi hàm sendDailyNotifications và chờ nó hoàn thành
+        await sendDailyNotifications();
+
+        // Nếu hàm sendDailyNotifications hoàn thành mà không có lỗi, gửi phản hồi thành công
+        res.send('Email sent successfully');
+    } catch (error) {
+        // Nếu có lỗi xảy ra, gửi phản hồi lỗi với mã trạng thái 500
+        res.status(500).send('Failed to send email');
+    }
+
 };
 
-// module.exports = dailyNotificationJob;
-module.exports = sendDailyNotifications;
+module.exports = dailyNotificationJob;
+// module.exports = sendDailyNotifications;
 
