@@ -86,10 +86,10 @@ const dailyNotificationJob = async (req, res) => {
         await sendDailyNotifications();
 
         // Nếu hàm sendDailyNotifications hoàn thành mà không có lỗi, gửi phản hồi thành công
-        res.send('Email sent successfully');
+        res.send('Email sent successfully with vercel');
     } catch (error) {
         // Nếu có lỗi xảy ra, gửi phản hồi lỗi với mã trạng thái 500
-        res.status(500).send('Failed to send email');
+        res.status(500).send('Failed to send email with vercel');
     }
 
 };
