@@ -1,0 +1,16 @@
+name: Run Every Minute Vercel Job
+
+on:
+  schedule:
+    # Chạy mỗi phút
+    - cron: '* * * * *'
+  # workflow_dispatch: # Kích hoạt workflow thủ công (nếu bạn muốn chạy thử ngay)
+  
+jobs:
+  run-vercel-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call Vercel API
+        run: |
+          curl -X GET https://lich-giang-day-backend.vercel.app/api/notifications
