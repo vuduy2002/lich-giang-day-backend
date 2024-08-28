@@ -20,6 +20,7 @@ const eventTypeRoutes = require('./routes/eventType');
 const lecturerRoutes = require('./routes/lecturer');
 const resetPass = require('./routes/resetPass');
 const locationRoutes = require('./routes/location');
+const sendDailyNotifications = require('./routes/notification');
 
 // Use routes
 app.use('/api/attendances', attendanceRoutes);
@@ -28,6 +29,7 @@ app.use('/api/eventTypes', eventTypeRoutes);
 app.use('/api/lecturers', lecturerRoutes);
 app.use('/api/', resetPass);
 app.use('/api/locations', locationRoutes);
+app.use('/api/notifications', sendDailyNotifications);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -37,7 +39,7 @@ mongoose.connect(process.env.MONGO_URI, {
   console.log('MongoDB connected');
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-    dailyNotificationJob();
+    // dailyNotificationJob();
   });
 }).catch(err => {
   console.error('Connection error', err.message);

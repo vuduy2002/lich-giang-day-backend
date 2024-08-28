@@ -53,7 +53,7 @@ const sendDailyNotifications = async () => {
 
       <h2>Xin chào! Hôm nay bạn sẽ có các sự kiện sau:</h2>
        ${events.map(event =>
-           `<h3>-${event.timeStart} - ${event.timeEnd}: ${event?.eventType?.typeName} tại ${event?.eventLocation?.locationName}</h3>`
+           `<h3>${event.timeStart} - ${event.timeEnd}: ${event?.eventType?.typeName} tại ${event?.eventLocation?.locationName}</h3>`
         )}
       `
       console.log(`Sending email to ${email}`);
@@ -65,7 +65,9 @@ const sendDailyNotifications = async () => {
 
 const dailyNotificationJob = () => {
   // Schedule the cron job to run every day at 6 AM
-  cron.schedule('* * * * *', sendDailyNotifications);
+  // cron.schedule('* * * * *', sendDailyNotifications);
 };
 
-module.exports = dailyNotificationJob;
+// module.exports = dailyNotificationJob;
+module.exports = sendDailyNotifications;
+
