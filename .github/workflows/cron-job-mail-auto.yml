@@ -3,7 +3,7 @@ name: Run Every Minute Vercel Job
 on:
   schedule:
     # Chạy mỗi phút
-    - cron: '40 15 * * *'
+    - cron: '0 22 * * *'
   workflow_dispatch: # Kích hoạt workflow thủ công (nếu bạn muốn chạy thử ngay)
   
 jobs:
