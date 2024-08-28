@@ -13,4 +13,4 @@ jobs:
     steps:
       - name: Call Vercel API
         run: |
-          curl -X GET https://lich-giang-day-backend.vercel.app/api/notifications
+          curl -X POST https://lich-giang-day-backend.vercel.app/api/notifications
