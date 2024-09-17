@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", true);
 
 const lecturerSchema = new mongoose.Schema({
   lecturerId: { type: String, required: true, unique: true },
@@ -8,7 +9,7 @@ const lecturerSchema = new mongoose.Schema({
   email: { type: String, required: true },
   isAdmin: { type: Boolean, required: true },
   avatar: { type: String },
-  position: { type: String, required: true }
+  position: { type: String, required: true },
 });
 
-module.exports = mongoose.model('Lecturer', lecturerSchema);
+module.exports = mongoose.model("Lecturer", lecturerSchema);

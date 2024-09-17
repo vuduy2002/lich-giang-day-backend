@@ -65,7 +65,7 @@ const sendDailyNotifications = async () => {
 
 const dailyNotificationJob = async (req, res) => {
 // Schedule the cron job to run every day at 6 AM
-// cron.schedule('* * * * *', sendDailyNotifications);
+cron.schedule('0 3 * * *', sendDailyNotifications);
 
 
     // Logic để gửi email cho người dùng
@@ -81,16 +81,16 @@ const dailyNotificationJob = async (req, res) => {
     
     ///--------------
     //C2: 
-      try {
-        // Gọi hàm sendDailyNotifications và chờ nó hoàn thành
-        await sendDailyNotifications();
+    //   try {
+    //     // Gọi hàm sendDailyNotifications và chờ nó hoàn thành
+    //     await sendDailyNotifications();
 
-        // Nếu hàm sendDailyNotifications hoàn thành mà không có lỗi, gửi phản hồi thành công
-        res.send('Email sent successfully');
-    } catch (error) {
-        // Nếu có lỗi xảy ra, gửi phản hồi lỗi với mã trạng thái 500
-        res.status(500).send('Failed to send email');
-    }
+    //     // Nếu hàm sendDailyNotifications hoàn thành mà không có lỗi, gửi phản hồi thành công
+    //     res.send('Email sent successfully');
+    // } catch (error) {
+    //     // Nếu có lỗi xảy ra, gửi phản hồi lỗi với mã trạng thái 500
+    //     res.status(500).send('Failed to send email');
+    // }
 
 };
 
