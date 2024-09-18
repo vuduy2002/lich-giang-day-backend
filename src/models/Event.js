@@ -11,8 +11,28 @@ const eventSchema = new mongoose.Schema({
   timeEnd: { type: String, required: true },
   eventLocation: { type: String, required: true, ref: "Location" },
   eventType: { type: String, required: true, ref: "EventType" },
-  host: [{ type: Object, required: true, ref: "Lecturer" }],
-  participants: [{ type: Object, required: true, ref: "Lecturer" }],
+  host: [
+    {
+      lecturerId: { type: String, ref: "Lecturer", required: true }, // Sử dụng ref cho lecturerId
+      lecturerName: { type: String },
+
+      reason: { type: String },
+      confirm: { type: String },
+      checked: { type: Boolean },
+      isHost: { type: Boolean },
+    },
+  ],
+  participants: [
+    {
+      lecturerId: { type: String, ref: "Lecturer", required: true }, // Sử dụng ref cho lecturerId
+
+      lecturerName: { type: String },
+      reason: { type: String },
+      confirm: { type: String },
+      checked: { type: Boolean },
+      isHost: { type: Boolean },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Event", eventSchema);

@@ -21,14 +21,14 @@ const sendDailyNotifications = async () => {
 
   const events = await Event.find({ date: today })
     .populate({
-      path: "host",
+      path: "host.lecturerId",
       model: Lecturer,
       localField: "host",
       foreignField: "lecturerId",
       select: "email -_id",
     })
     .populate({
-      path: "participants",
+      path: "participants.lecturerId",
       model: Lecturer,
       localField: "participants",
       foreignField: "lecturerId",
@@ -49,7 +49,7 @@ const sendDailyNotifications = async () => {
       select: "typeName -_id",
     });
   console.log("Events found:", events.length);
-
+  console.log("listMail: ", events[0].host);
   // Create a map to group events by lecturer
   const lecturerEventsMap = new Map();
 
@@ -62,18 +62,27 @@ const sendDailyNotifications = async () => {
     };
 
     // Add host to the lecturerEventsMap
-    if (event.host && event.host.email) {
-      addLecturerEvent(event.host.email);
+    if (event.host && event.host.length > 0) {
+      event.host.forEach((hostLecturer) => {
+        if (hostLecturer.lecturerId && hostLecturer.lecturerId.email) {
+          addLecturerEvent(hostLecturer.lecturerId.email);
+        }
+      });
     }
 
     // Add participants to the lecturerEventsMap
-    event.participants.forEach((lecturerDetail) => {
-      addLecturerEvent(lecturerDetail.email);
-    });
+    if (event.participants && event.participants.length > 0) {
+      event.participants.forEach((lecturerDetail) => {
+        if (lecturerDetail.lecturerId && lecturerDetail.lecturerId.email) {
+          addLecturerEvent(lecturerDetail.lecturerId.email);
+        }
+      });
+    }
   });
 
   // Send emails, avoiding duplicates
   const sentEmails = new Set();
+  console.log("lecturerEventsMap", lecturerEventsMap);
 
   lecturerEventsMap.forEach((events, email) => {
     if (!sentEmails.has(email)) {
@@ -94,30 +103,12 @@ const sendDailyNotifications = async () => {
 
 const dailyNotificationJob = async (req, res) => {
   // Schedule the cron job to run every day at 6 AM
-  // cron.schedule("0 3 * * *", sendDailyNotifications);
-
-  // Logic để gửi email cho người dùng
-
-  //C1:
-  // sendDailyNotifications()
-  //     .then(() => {
-  //         res.send('Email sent successfully');
-  //     })
-  //     .catch((error) => {
-  //         res.status(500).send('Failed to send email');
-  //     });
-
-  ///--------------
-  //c2:
+  // cron.schedule("* * * * *", sendDailyNotifications);
   try {
-    // Gọi hàm sendDailyNotifications và chờ nó hoàn thành
     await sendDailyNotifications();
-
-    // Nếu hàm sendDailyNotifications hoàn thành mà không có lỗi, gửi phản hồi thành công
-    res.send("Email sent successfully");
+    console.log("Cron job: Email sent successfully");
   } catch (error) {
-    // Nếu có lỗi xảy ra, gửi phản hồi lỗi với mã trạng thái 500
-    res.status(500).send("Failed to send email");
+    console.error("Cron job: Failed to send email", error);
   }
 };
 
