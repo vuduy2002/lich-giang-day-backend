@@ -1,31 +1,59 @@
-const cron = require('node-cron');
-const sendMail = require('../utils/sendEmail');
-const Event = require('../models/Event');
-const Lecturer = require('../models/Lecturer');
-const Location = require('../models/Location');
-const EventType = require('../models/EventType');
+const cron = require("node-cron");
+const sendMail = require("../utils/sendEmail");
+const Event = require("../models/Event");
+const Lecturer = require("../models/Lecturer");
+const Location = require("../models/Location");
+const EventType = require("../models/EventType");
 
 const sendDailyNotifications = async () => {
   const newDate = new Date();
 
   // Format date
-  const formattedMonth = newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1;
-  const formattedDate = newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate();
+  const formattedMonth =
+    newDate.getMonth() + 1 < 10
+      ? `0${newDate.getMonth() + 1}`
+      : newDate.getMonth() + 1;
+  const formattedDate =
+    newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate();
   const today = `${newDate.getFullYear()}-${formattedMonth}-${formattedDate}`;
-  
-  console.log('Checking for events for today:', today);
+
+  console.log("Checking for events for today:", today);
 
   const events = await Event.find({ date: today })
-    .populate({ path: 'host', model: Lecturer, localField: 'host', foreignField: 'lecturerId', select: 'email -_id' })
-    .populate({ path: 'participants', model: Lecturer, localField: 'participants', foreignField: 'lecturerId', select: 'email -_id' })
-    .populate({ path: 'eventLocation', model: Location, localField: 'eventLocation', foreignField: 'locationId', select: 'locationName -_id' })
-    .populate({ path: 'eventType', model: EventType, localField: 'eventType', foreignField: 'typeId', select: 'typeName -_id' });
-  console.log('Events found:', events.length);
+    .populate({
+      path: "host",
+      model: Lecturer,
+      localField: "host",
+      foreignField: "lecturerId",
+      select: "email -_id",
+    })
+    .populate({
+      path: "participants",
+      model: Lecturer,
+      localField: "participants",
+      foreignField: "lecturerId",
+      select: "email -_id",
+    })
+    .populate({
+      path: "eventLocation",
+      model: Location,
+      localField: "eventLocation",
+      foreignField: "locationId",
+      select: "locationName -_id",
+    })
+    .populate({
+      path: "eventType",
+      model: EventType,
+      localField: "eventType",
+      foreignField: "typeId",
+      select: "typeName -_id",
+    });
+  console.log("Events found:", events.length);
 
   // Create a map to group events by lecturer
   const lecturerEventsMap = new Map();
 
-  events.forEach(event => {
+  events.forEach((event) => {
     const addLecturerEvent = (lecturerEmail) => {
       if (!lecturerEventsMap.has(lecturerEmail)) {
         lecturerEventsMap.set(lecturerEmail, []);
@@ -39,7 +67,7 @@ const sendDailyNotifications = async () => {
     }
 
     // Add participants to the lecturerEventsMap
-    event.participants.forEach(lecturerDetail => {
+    event.participants.forEach((lecturerDetail) => {
       addLecturerEvent(lecturerDetail.email);
     });
   });
@@ -52,48 +80,46 @@ const sendDailyNotifications = async () => {
       const emailContent = `
 
       <h2>Xin chào! Hôm nay bạn sẽ có các sự kiện sau:</h2>
-       ${events.map(event =>
+       ${events.map(
+         (event) =>
            `<h3>${event.timeStart} - ${event.timeEnd}: ${event?.eventType?.typeName} tại ${event?.eventLocation?.locationName}</h3>`
-        )}
-      `
+       )}
+      `;
       console.log(`Sending email to ${email}`);
-      sendMail(email, 'Thông báo sự kiện hàng ngày', emailContent);
+      sendMail(email, "Thông báo sự kiện hàng ngày", emailContent);
       sentEmails.add(email);
     }
   });
 };
 
 const dailyNotificationJob = async (req, res) => {
-// Schedule the cron job to run every day at 6 AM
-cron.schedule('0 3 * * *', sendDailyNotifications);
+  // Schedule the cron job to run every day at 6 AM
+  // cron.schedule("0 3 * * *", sendDailyNotifications);
 
+  // Logic để gửi email cho người dùng
 
-    // Logic để gửi email cho người dùng
+  //C1:
+  // sendDailyNotifications()
+  //     .then(() => {
+  //         res.send('Email sent successfully');
+  //     })
+  //     .catch((error) => {
+  //         res.status(500).send('Failed to send email');
+  //     });
 
-    //C1:
-    // sendDailyNotifications()
-    //     .then(() => {
-    //         res.send('Email sent successfully');
-    //     })
-    //     .catch((error) => {
-    //         res.status(500).send('Failed to send email');
-    //     });
-    
-    ///--------------
-    //C2: 
-    //   try {
-    //     // Gọi hàm sendDailyNotifications và chờ nó hoàn thành
-    //     await sendDailyNotifications();
+  ///--------------
+  //c2:
+  try {
+    // Gọi hàm sendDailyNotifications và chờ nó hoàn thành
+    await sendDailyNotifications();
 
-    //     // Nếu hàm sendDailyNotifications hoàn thành mà không có lỗi, gửi phản hồi thành công
-    //     res.send('Email sent successfully');
-    // } catch (error) {
-    //     // Nếu có lỗi xảy ra, gửi phản hồi lỗi với mã trạng thái 500
-    //     res.status(500).send('Failed to send email');
-    // }
-
+    // Nếu hàm sendDailyNotifications hoàn thành mà không có lỗi, gửi phản hồi thành công
+    res.send("Email sent successfully");
+  } catch (error) {
+    // Nếu có lỗi xảy ra, gửi phản hồi lỗi với mã trạng thái 500
+    res.status(500).send("Failed to send email");
+  }
 };
 
 module.exports = dailyNotificationJob;
 // module.exports = sendDailyNotifications;
-
