@@ -43,7 +43,7 @@ mongoose
     console.log("MongoDB connected");
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
-      dailyNotificationJob();
+      // dailyNotificationJob();
     });
   })
   .catch((err) => {

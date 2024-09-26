@@ -49,7 +49,7 @@ const sendDailyNotifications = async () => {
       select: "typeName -_id",
     });
   console.log("Events found:", events.length);
-  console.log("listMail: ", events[0].host);
+  // console.log("listMail: ", events[0].host);
   // Create a map to group events by lecturer
   const lecturerEventsMap = new Map();
 
@@ -82,7 +82,6 @@ const sendDailyNotifications = async () => {
 
   // Send emails, avoiding duplicates
   const sentEmails = new Set();
-  console.log("lecturerEventsMap", lecturerEventsMap);
 
   lecturerEventsMap.forEach((events, email) => {
     if (!sentEmails.has(email)) {
@@ -104,9 +103,9 @@ const sendDailyNotifications = async () => {
 const dailyNotificationJob = async (req, res) => {
   // Schedule the cron job to run every day at 6 AM
   // cron.schedule("* * * * *", sendDailyNotifications);
+  res.status(200).send("Yêu cầu gửi email đã nhận");
   try {
     await sendDailyNotifications();
-    console.log("Cron job: Email sent successfully");
   } catch (error) {
     console.error("Cron job: Failed to send email", error);
   }

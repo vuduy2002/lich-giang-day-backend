@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const dailyNotificationJob = require('../controllers/notificationController')
+const dailyNotificationJob = require("../controllers/notificationController");
 
-router.post('/', dailyNotificationJob);
+router.post("/", dailyNotificationJob);
 
 module.exports = router;
