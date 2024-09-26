@@ -103,8 +103,9 @@ const sendDailyNotifications = async () => {
 const dailyNotificationJob = async (req, res) => {
   // Schedule the cron job to run every day at 6 AM
   // cron.schedule("* * * * *", sendDailyNotifications);
-  res.status(200).send("Yêu cầu gửi email đã nhận");
+
   try {
+      res.status(200).send("Yêu cầu gửi email đã nhận");
     await sendDailyNotifications();
     console.log("Cron job: Email sent successfully");
   } catch (error) {
