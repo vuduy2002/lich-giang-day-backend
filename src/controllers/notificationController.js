@@ -105,7 +105,7 @@ const dailyNotificationJob = async (req, res) => {
   // cron.schedule("* * * * *", sendDailyNotifications);
 
   try {
-      res.status(200).send("Yêu cầu gửi email đã nhận");
+      res.status(200).send("Yêu cầu gửi email đã nhận !!!");
     await sendDailyNotifications();
     console.log("Cron job: Email sent successfully");
   } catch (error) {
