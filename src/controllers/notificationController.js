@@ -52,15 +52,15 @@ const sendDailyNotifications = async () => {
   // console.log("listMail: ", events[0].host);
   // Create a map to group events by lecturer
   const lecturerEventsMap = new Map();
-
-  events.forEach((event) => {
-    const addLecturerEvent = (lecturerEmail) => {
+  const addLecturerEvent = (lecturerEmail) => {
       if (!lecturerEventsMap.has(lecturerEmail)) {
         lecturerEventsMap.set(lecturerEmail, []);
       }
       lecturerEventsMap.get(lecturerEmail).push(event);
     };
 
+  events.forEach((event) => {
+  
     // Add host to the lecturerEventsMap
     if (event.host && event.host.length > 0) {
       event.host.forEach((hostLecturer) => {
