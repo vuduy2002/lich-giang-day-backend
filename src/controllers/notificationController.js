@@ -106,6 +106,7 @@ const dailyNotificationJob = async (req, res) => {
   res.status(200).send("Yêu cầu gửi email đã nhận");
   try {
     await sendDailyNotifications();
+    console.log("Cron job: Email sent successfully");
   } catch (error) {
     console.error("Cron job: Failed to send email", error);
   }
