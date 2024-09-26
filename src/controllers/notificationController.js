@@ -52,15 +52,15 @@ const sendDailyNotifications = async () => {
   // console.log("listMail: ", events[0].host);
   // Create a map to group events by lecturer
   const lecturerEventsMap = new Map();
-
-  events.forEach((event) => {
-    const addLecturerEvent = (lecturerEmail) => {
+  const addLecturerEvent = (lecturerEmail) => {
       if (!lecturerEventsMap.has(lecturerEmail)) {
         lecturerEventsMap.set(lecturerEmail, []);
       }
       lecturerEventsMap.get(lecturerEmail).push(event);
     };
 
+  events.forEach((event) => {
+  
     // Add host to the lecturerEventsMap
     if (event.host && event.host.length > 0) {
       event.host.forEach((hostLecturer) => {
@@ -103,8 +103,9 @@ const sendDailyNotifications = async () => {
 const dailyNotificationJob = async (req, res) => {
   // Schedule the cron job to run every day at 6 AM
   // cron.schedule("* * * * *", sendDailyNotifications);
-  res.status(200).send("Yêu cầu gửi email đã nhận");
+
   try {
+      res.status(200).send("Yêu cầu gửi email đã nhận !!!");
     await sendDailyNotifications();
   } catch (error) {
     console.error("Cron job: Failed to send email", error);
